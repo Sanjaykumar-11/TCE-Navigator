@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="styles/form.css">
+</head>
+<body style="background-color: lemonchiffon;">
+  <title>Event Registration Form.</title>
+  <div id="event-registration">
+    <div id="event-registration-form">
+        <h1 style="color: brown; font-size: 30px;">
+        <center>ADD EVENTS</center></h1><br><br>
+        <label for="event-name">Name</label>
+        <input type="text" id="event-name" name="event-name" /><br><br>
+        <label for="event-domain">Domain</label>
+        <input type="text" id="event-domain" name="event-description" /><br><br>
+        <label for="event-description">Description</label>
+        <input type="text" id="event-description" name="event-description" /><br><br>
+        <label for="eventlink">Location Link</label>
+        <input type="eventlink" id="eventlink" name="eventlink" /><br><br>
+        <label for="eventlink">Date</label>
+        <input type="date" class="date" name="date" /><br><br><br><br>
+        <button type="button" onclick="add()">ADD</button>
+  </div>
+</body>
+<script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+<script src="index.js"></script>
+</html>

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+
+<title>Login</title>
+
+<head>
+    <center><h1 style="font-size: 50px; color:brown">TCE NAVIGATOR</h1></center>
+</head>     
+
+<style>
+  .header 
+  {
+    background-repeat:no-repeat;
+    background-size:cover;
+    height: 60px;
+    width: 600px;
+  }
+  body 
+  {
+    background-image: url("images/bg.jpg");
+    background-repeat:no-repeat;
+    background-size:cover;
+    height: 750px;
+  }
+  .main
+  {
+      width: 320px;
+      height: 420px;
+      background-repeat: no-repeat;
+      background-position: left top;
+      background-attachment: fixed;
+      background-size: cover;
+      color: brown;
+      top: 50%;
+      left: 50%;
+      position: absolute;
+      transform: translate(-50%,-50%);
+      box-sizing: border-box;
+      padding: 70px 30px;
+  }
+  .main input
+  {
+      width: 100%;
+      margin-bottom: 20px;
+  }
+  .main label
+  {
+      margin: 0;
+      padding: 0;
+      font-weight: bold;
+  }
+  h1
+  {
+      margin: 0;
+      padding: 0 0 20px;
+      text-align: center;
+      font-size: 22px;
+  }
+  .main input[type="text"], input[type="password"]
+  {
+      border: none;
+      border-bottom: 2px solid brown;
+      background: white;
+      outline: 1px;
+      height: 50px;
+      color: black;
+      font-size: 15px;
+  }
+  .main button
+  {
+      border: none;
+      outline: none;
+      height: 40px;
+      background: brown;
+      color: white;
+      font-size: 20px;
+      border-radius: 20px;
+      width: 100%;
+      margin-bottom: 20px;
+  }
+  .main button:hover
+  {
+      cursor: pointer;
+      background: red;
+      color:white;
+  }
+  .logo
+  {
+      width: 100px;
+      height: 100px;
+      border-radius: 80%;
+      position: absolute;
+      top: 5px;
+      left: calc(50% - 50px);
+  }
+</style>
+
+<body>
+  <div class="main">      
+      <img src="images/icon.jpeg" class="logo">
+      <br><br><br><br>
+        <h1 style="color:brown;" > LOGIN </h1><br>
+
+        <label for="username">Email </label><br><br>
+        <input type="text" id="email" name="userName" required>
+        <br>
+
+        <label for="password">Password </label><br><br>
+        <input type="password" id="password" name="password" required>
+        <br>
+
+        <button onclick="login()">Login</button>
+  </div>
+</body>
+
+ <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+ <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
+ <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+
+ <script src="scripts/index.js"></script>
+
+</html>
