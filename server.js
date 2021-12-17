@@ -67,7 +67,9 @@ app.get('/register', (req, res)=>{
     res.sendFile(`${__dirname}/register.html`)
 })
 
-
+app.get('/alert', (req, res)=>{
+    res.sendFile(`${__dirname}/alert.html`);
+})
 //post functions
 app.post('/user', (req, res)=>{
     req.session.loggedin = false;
@@ -112,8 +114,13 @@ app.post('/register', (req, res)=>{
     var email = req.body.email;
     var password = req.body.password;
     var password1 = req.body.password1;
-    if(password === password1)
+    console.log(name)
+    console.log(email)
+    console.log(password)
+    console.log(password1)
+    if(password == password1)
     {
+        console.log("if entered")
         const passwordHash = bcrypt.hashSync(password, 10);
         let qr = `INSERT INTO user(name, mail, password) VALUES('${name}', '${email}', '${passwordHash}')`
         db.query(qr, (error, result)=>{
@@ -123,6 +130,6 @@ app.post('/register', (req, res)=>{
     }
     else
     {
-        res.write(`<script>window.alert('Password doesn't match!');window.location.href = '/register';</script>`)
+        res.redirect('/alert');
     }
 })
