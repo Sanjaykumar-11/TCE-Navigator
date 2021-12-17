@@ -1,0 +1,141 @@
+#x:hover{
+    text-decoration: underline;
+    font-weight: bold;
+}
+#container{
+    width :430px;
+    height :300px;
+}
+#box1{
+    padding: 10px 10px;
+    border-radius: 25px;
+    box-shadow: 0 0 5px;
+    
+}
+#box1:hover{
+  border: 1px solid #003380;
+  border-radius: 25px;
+  box-shadow: 0 0 5px;
+}
+.button1{
+    background-color: #003380;
+    color: whitesmoke;
+    border-radius: 20px; 
+    width:170px;
+    height:40px;
+    border-color: #003380;
+
+}
+.button2{
+    background-color:#003380;
+    color: whitesmoke;
+    border-radius: 20px; 
+    width:170px;
+    height:40px;
+    border-color: #003380;
+    
+}
+.button1:hover{
+
+    width: 220px;
+    height:43px
+}
+.button2:hover{
+ 
+    width: 220px;
+    height: 43px;
+}
+
+label{
+    color: #003380;
+    font-weight:bold;
+    
+}
+input{
+    margin-bottom:30px;
+}
+#text{
+    border: 1px solid #003380;
+    height: 45px;
+    width: 350px;
+
+}
+#text:hover{
+    box-shadow: 2px 2px #003380;
+}
+
+.button3{
+    background-color: #003380;
+    color: whitesmoke;
+    border-radius: 10px; 
+    width: 150px;
+    height:40px;
+    border-color: #003380;
+
+}
+
+.button4{
+    background-color: #003380;
+    color: whitesmoke;
+    border-radius: 10px; 
+    width: 100px;
+    height:25px;
+    border-color: #003380;
+
+}
+
+a{
+    text-decoration: none;
+    color: whitesmoke;
+}
+
+#cour{
+    
+    color: #003380;
+}
+#cour:hover{
+    text-decoration:underline;
+}
+
+    @import url("https://fonts.googleapis.com/css?family=Cardo:400i|Rubik:400,700&display=swap");
+:root {
+  --d: 700ms;
+  --e: cubic-bezier(0.19, 1, 0.22, 1);
+  --font-sans: "Rubik", sans-serif;
+  --font-serif: "Cardo", serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  display: grid;
+  
+}
+
+
+.btn {
+  cursor: pointer;
+  margin-top: 1.5rem;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.65rem;
+  font-weight: bold;
+  letter-spacing: 0.025rem;
+  text-transform: uppercase;
+  color: white;
+  background-color: black;
+  border: none;
+}
+.btn:hover {
+  background-color: #0d0d0d;
+}
+.btn:focus {
+  outline: 1px dashed yellow;
+  outline-offset: 3px;
+}
+

@@ -17,7 +17,7 @@
   }
   body 
   {
-    background-image: url("images/bg.jpg");
+    background-image: url("bg.jpg");
     background-repeat:no-repeat;
     background-size:cover;
     height: 750px;
@@ -99,17 +99,19 @@
   <div class="main">      
       <img src="images/icon.jpeg" class="logo">
       <br><br><br><br>
+      <form method="post" action="/user">
         <h1 style="color:brown;" > LOGIN </h1><br>
 
         <label for="username">Email </label><br><br>
-        <input type="text" id="email" name="userName" required>
+        <input type="text" id="email" name="email" required>
         <br>
 
         <label for="password">Password </label><br><br>
         <input type="password" id="password" name="password" required>
         <br>
 
-        <button onclick="login()">Login</button>
+        <button>Login</button>
+      </form>
   </div>
 </body>
 
