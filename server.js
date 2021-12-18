@@ -74,6 +74,10 @@ app.get('/alert', (req, res)=>{
     res.sendFile(`${__dirname}/alert.html`);
 })
 
+app.get('/fullscreenmap', (req, res)=>{
+    res.sendFile(`${__dirname}/fullscreenmap.html`);
+})
+
 app.get('/addevents', (req, res)=>{
     res.sendFile(`${__dirname}/addevents.html`);
 });
