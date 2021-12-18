@@ -70,6 +70,12 @@ app.get('/register', (req, res)=>{
 app.get('/alert', (req, res)=>{
     res.sendFile(`${__dirname}/alert.html`);
 })
+
+app.get('/addevents', (req, res)=>{
+    res.sendFile(`${__dirname}/addevents.html`);
+});
+
+
 //post functions
 app.post('/user', (req, res)=>{
     req.session.loggedin = false;
@@ -118,18 +124,31 @@ app.post('/register', (req, res)=>{
     console.log(email)
     console.log(password)
     console.log(password1)
-    if(password == password1)
+
+    q = `SELECT mail FROM user WHERE mail='${email}'`
+    db.query(q, (error, result)=>
     {
-        console.log("if entered")
-        const passwordHash = bcrypt.hashSync(password, 10);
-        let qr = `INSERT INTO user(name, mail, password) VALUES('${name}', '${email}', '${passwordHash}')`
-        db.query(qr, (error, result)=>{
-            if(error) throw error;
-            res.write(`<script>window.alert('Registration successful');window.location.href = '/userLogin';</script>`)
-        })
-    }
-    else
-    {
-        res.redirect('/alert');
-    }
+        if(error) throw error;
+        if(result.length === 0)
+        {
+            if(password == password1)
+            {
+                console.log("if entered")
+                const passwordHash = bcrypt.hashSync(password, 10);
+                let qr = `INSERT INTO user(name, mail, password) VALUES('${name}', '${email}', '${passwordHash}')`
+                db.query(qr, (error, result)=>{
+                    if(error) throw error;
+                    res.write(`<script>window.alert('Registration successful');window.location.href = '/userLogin';</script>`)
+                })
+            }
+            else
+            {
+                res.redirect('/alert');
+            }
+        }
+        else
+        {
+            res.write(`<script>window.alert('User already exist!'); window.location.href = '/userLogin';</script>`)
+        }
+    });
 })
