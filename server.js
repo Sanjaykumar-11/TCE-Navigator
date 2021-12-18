@@ -51,6 +51,9 @@ app.get('/userLogin', (req, res)=>{
     res.sendFile(`${__dirname}/login.html`);
 })
 
+app.get('/adminLogin', (req, res)=>{
+    res.sendFile(`${__dirname}/adminlogin.html`)
+})
 app.get('/addevents', (req, res)=>{
     if(req.session.loggedin = true)
     {
@@ -151,4 +154,42 @@ app.post('/register', (req, res)=>{
             res.write(`<script>window.alert('User already exist!'); window.location.href = '/userLogin';</script>`)
         }
     });
+})
+
+app.post('/admin', (req, res)=>{
+    req.session.loggedin = false;
+    var email = req.body.email;
+    console.log(email)
+    
+    var password = req.body.password;
+    console.log(password)
+
+    if (email && password) {
+        db.query(`SELECT * FROM admin WHERE mail = '${email}' `, function(error, results) {
+            if(error) throw error;
+            if (results.length > 0) {
+                var hash = results[0].password;
+
+                const passwordHash = bcrypt.hashSync(password, 10);
+                console.log(passwordHash)
+                const verified = bcrypt.compareSync(password, hash);
+
+                if (verified) {
+                    req.session.loggedin = true;
+                    req.session.email = email;
+                    req.session.name = results[0].name;
+                    res.redirect('/addevents');
+                } else {
+                    res.write(`<script>window.alert('Enter the correct password!!!!!');window.location.href = '/userLogin';</script>`);
+                }
+
+            } else {
+
+                res.write(`<script>window.alert('Enter the correct email!!!!!');window.location.href = '/userLogin';</script>`)
+            }
+            res.end();
+        });
+    } else {
+        res.write(`<script>window.alert('Enter  password and email!!!!!!');window.location.href = '/userLogin';</script>`)
+    }
 })
