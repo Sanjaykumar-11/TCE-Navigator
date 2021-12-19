@@ -74,10 +74,37 @@ app.get('/alert', (req, res)=>{
     res.sendFile(`${__dirname}/alert.html`);
 })
 
+app.get('/fullscreenmap', (req, res)=>{
+    res.sendFile(`${__dirname}/fullscreenmap.html`);
+})
+
 app.get('/addevents', (req, res)=>{
     res.sendFile(`${__dirname}/addevents.html`);
 });
 
+app.get('/userpage', (req, res)=>{
+    res.sendFile(`${__dirname}/userpage.html`)
+}) 
+
+app.get('/uploadfile', (req, res)=>{
+    res.sendFile(`${__dirname}/fileupload.html`)
+})
+
+app.get('/upf', (req, res)=>{
+    var id = req.session.eventid
+    var q = `SELECT * from event WHERE id=${id}`
+    if(id != undefined)
+    {
+        db.query(q, (err, result)=>{
+            if(err) throw err;
+            res.send(result)
+        })
+    }
+    else
+    {
+        res.send();
+    }
+})
 
 //post functions
 app.post('/user', (req, res)=>{
@@ -102,7 +129,7 @@ app.post('/user', (req, res)=>{
                     req.session.loggedin = true;
                     req.session.email = email;
                     req.session.name = results[0].name;
-                    res.redirect('/addevents');
+                    res.redirect('/userpage');
                 } else {
                     res.write(`<script>window.alert('Enter the correct password!!!!!');window.location.href = '/userLogin';</script>`);
                 }
@@ -165,7 +192,7 @@ app.post('/admin', (req, res)=>{
     console.log(password)
 
     if (email && password) {
-        db.query(`SELECT * FROM admin WHERE mail = '${email}' `, function(error, results) {
+        db.query(`SELECT * FROM admin WHERE email = '${email}' `, function(error, results) {
             if(error) throw error;
             if (results.length > 0) {
                 var hash = results[0].password;
@@ -180,16 +207,60 @@ app.post('/admin', (req, res)=>{
                     req.session.name = results[0].name;
                     res.redirect('/addevents');
                 } else {
-                    res.write(`<script>window.alert('Enter the correct password!!!!!');window.location.href = '/userLogin';</script>`);
+                    res.write(`<script>window.alert('Enter the correct password!!!!!');window.location.href = '/adminLogin';</script>`);
                 }
 
             } else {
 
-                res.write(`<script>window.alert('Enter the correct email!!!!!');window.location.href = '/userLogin';</script>`)
+                res.write(`<script>window.alert('Enter the correct email!!!!!');window.location.href = '/adminLogin';</script>`)
             }
             res.end();
         });
     } else {
-        res.write(`<script>window.alert('Enter  password and email!!!!!!');window.location.href = '/userLogin';</script>`)
+        res.write(`<script>window.alert('Enter  password and email!!!!!!');window.location.href = '/adminLogin';</script>`)
     }
 })
+app.post('/eventform', function(req, res) {
+    var event_name = req.body.event_name
+    var event_date = req.body.event_date
+    var event_venue = req.body.event_venue
+    var registration_venue = req.body.registration_venue
+    var location_link = req.body.location_link
+    var event_desc = req.body.event_desc
+
+    var q = `INSERT INTO event(date, event_name, event_venue, registration_venue, location_link, description) VALUES('${event_date}','${event_name}','${event_venue}','${registration_venue}','${location_link}','${event_desc}');`
+    db.query(q, (err, result)=>{
+        if(err) throw err;
+        req.session.eventid = result['insertId'];
+        res.redirect('/uploadfile');
+    })
+});
+const storage = multer.diskStorage({
+    destination: function(req, file, cb) {
+        cb(null, 'upload')
+    },
+    filename: function(req, file, cb) {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
+
+        var file = uniqueSuffix + '.' + path.extname(file.originalname)
+
+        cb(null, file)
+    }
+}) 
+
+var upload = multer({ storage: storage });
+
+app.post('/upl', upload.single('filer'), function(req, res) {
+
+    const file = req.file
+    if (!file) {
+        res.write(`<script>window.alert('Upload file');window.location.href = '/uploadfile';</script>`);
+    }
+    let q = `UPDATE event SET event_img = '${file.filename}' WHERE id=${req.session.eventid};`
+    db.query(q, (err, result) => {
+        if (err)
+            throw (err)
+        req.session.eventid = "";
+        res.redirect(`addevents`);
+    })
+});
