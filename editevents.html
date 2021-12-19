@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+    <head>
+      <title>EDIT EVENTS</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Cookie&family=Yuji+Syuku&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="style1.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-google-chart/1.0.0-beta.1/ng-google-chart.min.js" type="text/javascript"></script>
+      <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+      <script type="text/javascript" src="dash.js"></script>
+       <!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+<!-- jQuery library -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<!-- Popper JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+
+<!-- Latest compiled JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+
+      <nav class="navbar navbar-expand-sm "style="background-color: #003380; color: whitesmoke" id="dark">
+        
+        <a class="navbar-brand" href="/" style="font-family:lobster"><img src="tce_logo.png" alt="logo" style="width:78px; height:70px; margin-left: 10px;"> </a>
+        <ul class="navbar-nav">
+            <li class="nav-item">
+               <h4> <a class="nav-link" href="/" style="font-family:lobster;color: whitesmoke;"><h2 style="margin-top: 10px; text-align: center;">TCE NAVIGATOR</h2></a></h4>
+            </li></ul>
+            
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                    <li class="nav-item"> <h5><a class="nav-link" id='x' href="/addevents" style="font-family:lobster; color:whitesmoke; text-decoration: none; padding-right: 30px;">BACK</a></h5></li>
+                </ul>
+      </nav>
+        
+    </head>
+    
+
+    <body style="background-color: whitesmoke" ng-app="dash" ng-controller="dashcon">
+
+    <br><br>
+
+<div class="container">  
+  <center><h1 style = color:#003380; font-size>EVENTS</h1></center>
+     
+  <br/>  
+  <table class="table table-bordered data-table">  
+    <tr>
+      <th>ID</th>  
+      <th>DATE</th>  
+      <th>EVENT NAME</th>  
+      <th>EVENT VENUE</th>
+      <th>REGISTRATION VENUE</th>
+      <th>LOCATION_LINK</th>
+      <th>DESCRIPTION</th>
+      <th>PUBLISH</th>
+    </tr> 
+   
+    <tr ng-repeat="x in events">
+      <td>{{x.id}}</td>
+      <td>{{x.date.slice(0,10)}}</td>
+      <td>{{x.event_name}}</td>
+      <td>{{x.event_venue}}</td>
+      <td>{{x.registration_venue}}</td>
+      <td>{{x.location_link}}</td>
+      <td>{{x.description}}</td>
+      <td>{{x.display}}</td>
+    <td><button class="btn btn-primary"><a href="/updateform?id={{x.id}}" style="text-decoration: none; color: whitesmoke">Update</a></button>
+
+   
+      <!--close the modal by just clicking outside of the modal-->
+      <script>
+          var modal = document.getElementById('id01');
+   
+          window.onclick = function(event) {
+              if (event.target == modal) {
+                  modal.style.display = "none";
+              }
+          }
+      </script></td>
+  <td><form method="post" action="/delev">
+    <input type="hidden" name="devent" value='{{x.id}}'>
+    <button type="submit" class="btn btn-danger save-btn">Delete</button></form></td></tr>
+  </table>  
+     
+</div>  
+    
+       
+</body>  
+</html>  

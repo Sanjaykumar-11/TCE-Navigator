@@ -44,6 +44,7 @@ app.listen(3100, () => {
 
 //get funtions
 app.get('/', (req, res)=>{
+    req.session.loggedin = false;
     res.sendFile(`${__dirname}/index.html`);
 })
 
@@ -54,16 +55,25 @@ app.get('/userLogin', (req, res)=>{
 app.get('/adminLogin', (req, res)=>{
     res.sendFile(`${__dirname}/adminlogin.html`)
 })
-app.get('/addevents', (req, res)=>{
-    if(req.session.loggedin = true)
-    {
-        res.sendFile(`${__dirname}/addevents.html`);
-    }
-    else
-    {
-        res.sendFile(`${__dirname}/login.html`);
-    }
-    
+
+
+app.get('/dashboardtotal', (req, res)=>{
+    let q = `SELECT COUNT(id) FROM event`
+    db.query(q, (error, result)=>{
+        if(error) throw error;
+        console.log(result)
+        //var x = result[0]['COUNT(id)']
+        res.send(result)
+    })
+})
+
+app.get('/dashboardparticular', (req, res)=>{
+    let qr = `SELECT COUNT(id) FROM event WHERE display='yes'`
+    db.query(qr, (err, result)=>{
+        if(err) throw error;
+        //var y = result[0]['COUNT(id)'];
+        res.send(result)
+    })
 })
 
 app.get('/register', (req, res)=>{
@@ -79,8 +89,53 @@ app.get('/fullscreenmap', (req, res)=>{
 })
 
 app.get('/addevents', (req, res)=>{
-    res.sendFile(`${__dirname}/addevents.html`);
+    if(req.session.loggedin == true)
+    {
+        console.log(req.session.loggedin)
+        res.sendFile(`${__dirname}/addevents.html`);
+    }
+    else
+    {
+        res.redirect(`adminLogin`)
+    }
 });
+
+app.get('/editevents', (req, res)=>{
+    res.sendFile(`${__dirname}/editevents.html`)
+})
+
+app.get('/eventtable', (req, res)=>{
+    let q = `SELECT * FROM event`
+    db.query(q, (err, results)=>{
+        if(err) throw err;
+        res.send(results);
+    })
+})
+
+app.get('/logout', (req, res)=>{
+    req.session.loggedin = false;
+    res.sendFile(`${__dirname}/index.html`)
+})
+
+app.get('/updateform', (req, res)=>{
+    req.session.up_id = req.query.id;
+    res.sendFile(`${__dirname}/updateevents.html`);
+})
+
+app.get('/update', (req, res)=>{
+    if(req.session.up_id != undefined)
+    {
+        let q = `SELECT * FROM event WHERE id=${req.session.up_id}`;
+        db.query(q, (error, result)=>{
+            if(error) throw error;
+            res.send(result);
+        })
+    }
+    else
+    {
+        res.send()
+    }
+})
 
 app.get('/userpage', (req, res)=>{
     res.sendFile(`${__dirname}/userpage.html`)
@@ -220,6 +275,7 @@ app.post('/admin', (req, res)=>{
         res.write(`<script>window.alert('Enter  password and email!!!!!!');window.location.href = '/adminLogin';</script>`)
     }
 })
+
 app.post('/eventform', function(req, res) {
     var event_name = req.body.event_name
     var event_date = req.body.event_date
@@ -264,3 +320,27 @@ app.post('/upl', upload.single('filer'), function(req, res) {
         res.redirect(`addevents`);
     })
 });
+
+app.post('/upevent',(req, res)=>{
+    var id = req.body.event_id
+    var event_name = req.body.event_name
+    var event_date = req.body.event_date
+    var event_venue = req.body.event_venue
+    var registration_venue = req.body.registration_venue
+    var location_link = req.body.location_link
+    var event_desc = req.body.event_desc
+    var publish = req.body.publish;
+    let q=`UPDATE event SET date='${event_date}', event_name='${event_name}', event_venue='${event_venue}',registration_venue='${registration_venue}', location_link='${location_link}', description = '${event_desc}', display = '${publish}' where id ='${id}'`;
+    db.query(q,(err,result)=>{
+        if(err) throw err;
+        res.write(`<script>window.alert('Updated!'); window.location.href = 'editevents';</script>`);
+    })
+})
+
+app.post('/delev',(req,res)=>{
+    var id=req.body.devent;
+    let q=`DELETE FROM event where id='${id}'`
+    db.query(q,(err,result)=>{
+        if( err) throw err;
+        res.redirect('editevents')
+    })})
