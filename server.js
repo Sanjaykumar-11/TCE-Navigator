@@ -15,6 +15,8 @@ app.use(bp.urlencoded({ extended: false }));
 app.use(express.static('images'));
 app.use(express.static('scripts'));
 app.use(express.static('styles'));
+app.use(express.static('upload'));
+
 
 app.use(session({
     secret: 'secret',
@@ -125,11 +127,19 @@ app.get('/updateform', (req, res)=>{
 app.get('/update', (req, res)=>{
     if(req.session.up_id != undefined)
     {
-        let q = `SELECT * FROM event WHERE id=${req.session.up_id}`;
-        db.query(q, (error, result)=>{
+        if(req.session.up_id != "")
+        {
+            console.log(req.session.up_id)
+            let q = `SELECT * FROM event WHERE id=${req.session.up_id}`;
+            db.query(q, (error, result)=>{
             if(error) throw error;
             res.send(result);
-        })
+            });
+        }
+        else
+        {
+            res.send()
+        }
     }
     else
     {
@@ -145,22 +155,29 @@ app.get('/uploadfile', (req, res)=>{
     res.sendFile(`${__dirname}/fileupload.html`)
 })
 
+
 app.get('/upf', (req, res)=>{
     var id = req.session.eventid
     var q = `SELECT * from event WHERE id=${id}`
     if(id != undefined)
     {
-        db.query(q, (err, result)=>{
-            if(err) throw err;
-            res.send(result)
-        })
+        if(id != "")
+        {
+            db.query(q, (err, result)=>{
+                if(err) throw err;
+                res.send(result)
+            })
+        }
+        else
+        {
+            res.send();
+        }
     }
     else
     {
         res.send();
     }
 })
-
 //post functions
 app.post('/user', (req, res)=>{
     req.session.loggedin = false;
@@ -281,13 +298,13 @@ app.post('/eventform', function(req, res) {
     var event_date = req.body.event_date
     var event_venue = req.body.event_venue
     var registration_venue = req.body.registration_venue
-    var location_link = req.body.location_link
     var event_desc = req.body.event_desc
 
-    var q = `INSERT INTO event(date, event_name, event_venue, registration_venue, location_link, description) VALUES('${event_date}','${event_name}','${event_venue}','${registration_venue}','${location_link}','${event_desc}');`
+    var q = `INSERT INTO event(date, event_name, event_venue, registration_venue, description) VALUES('${event_date}','${event_name}','${event_venue}','${registration_venue}', '${event_desc}');`
     db.query(q, (err, result)=>{
         if(err) throw err;
         req.session.eventid = result['insertId'];
+        console.log(req.session.eventid)
         res.redirect('/uploadfile');
     })
 });
@@ -296,16 +313,15 @@ const storage = multer.diskStorage({
         cb(null, 'upload')
     },
     filename: function(req, file, cb) {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
+        const uniqueSuffix = Date.now()
 
-        var file = uniqueSuffix + '.' + path.extname(file.originalname)
+        var file = uniqueSuffix + path.extname(file.originalname)
 
         cb(null, file)
     }
 }) 
 
 var upload = multer({ storage: storage });
-
 app.post('/upl', upload.single('filer'), function(req, res) {
 
     const file = req.file
@@ -327,10 +343,9 @@ app.post('/upevent',(req, res)=>{
     var event_date = req.body.event_date
     var event_venue = req.body.event_venue
     var registration_venue = req.body.registration_venue
-    var location_link = req.body.location_link
     var event_desc = req.body.event_desc
     var publish = req.body.publish;
-    let q=`UPDATE event SET date='${event_date}', event_name='${event_name}', event_venue='${event_venue}',registration_venue='${registration_venue}', location_link='${location_link}', description = '${event_desc}', display = '${publish}' where id ='${id}'`;
+    let q=`UPDATE event SET date='${event_date}', event_name='${event_name}', event_venue='${event_venue}',registration_venue='${registration_venue}', description = '${event_desc}', display = '${publish}' where id ='${id}'`;
     db.query(q,(err,result)=>{
         if(err) throw err;
         res.write(`<script>window.alert('Updated!'); window.location.href = 'editevents';</script>`);

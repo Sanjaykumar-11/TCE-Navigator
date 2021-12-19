@@ -55,18 +55,16 @@
       <th>EVENT NAME</th>  
       <th>EVENT VENUE</th>
       <th>REGISTRATION VENUE</th>
-      <th>LOCATION_LINK</th>
       <th>DESCRIPTION</th>
       <th>PUBLISH</th>
     </tr> 
-   
+    
     <tr ng-repeat="x in events">
       <td>{{x.id}}</td>
       <td>{{x.date.slice(0,10)}}</td>
       <td>{{x.event_name}}</td>
       <td>{{x.event_venue}}</td>
       <td>{{x.registration_venue}}</td>
-      <td>{{x.location_link}}</td>
       <td>{{x.description}}</td>
       <td>{{x.display}}</td>
     <td><button class="btn btn-primary"><a href="/updateform?id={{x.id}}" style="text-decoration: none; color: whitesmoke">Update</a></button>
