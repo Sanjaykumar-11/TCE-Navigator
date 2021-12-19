@@ -114,7 +114,7 @@ app.get('/eventtable', (req, res)=>{
 
 app.get('/logout', (req, res)=>{
     req.session.loggedin = false;
-    res.sendFile(`${__dirname}/index.html`)
+    res.redirect(`/`)
 })
 
 app.get('/updateform', (req, res)=>{
