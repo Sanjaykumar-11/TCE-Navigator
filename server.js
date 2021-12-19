@@ -8,6 +8,7 @@ const multer = require('multer');
 const app = express();
 const path = require('path');
 const { Console } = require('console');
+const nodemailer = require('nodemailer')
 
 //app uses
 app.use(bp.json());
@@ -46,11 +47,10 @@ app.listen(3100, () => {
 
 //get funtions
 app.get('/', (req, res)=>{
-    req.session.loggedin = false;
     res.sendFile(`${__dirname}/index.html`);
 })
 
-app.get('/userLogin', (req, res)=>{
+app.get('/unsubscribe', (req, res)=>{
     res.sendFile(`${__dirname}/login.html`);
 })
 
@@ -78,7 +78,13 @@ app.get('/dashboardparticular', (req, res)=>{
     })
 })
 
-app.get('/register', (req, res)=>{
+app.get('/dashboard', (req, res)=>{
+    let q = `SELECT * FROM event WHERE display='yes'`
+    db.query(q, (error, result)=>{
+        res.send(result)
+    })
+})
+app.get('/subscribe', (req, res)=>{
     res.sendFile(`${__dirname}/register.html`)
 })
 
@@ -103,7 +109,15 @@ app.get('/addevents', (req, res)=>{
 });
 
 app.get('/editevents', (req, res)=>{
-    res.sendFile(`${__dirname}/editevents.html`)
+    if(req.session.loggedin == true)
+    {
+        console.log(req.session.loggedin)
+        res.sendFile(`${__dirname}/editevents.html`)
+    }
+    else
+    {
+        res.redirect(`adminLogin`)
+    }
 })
 
 app.get('/eventtable', (req, res)=>{
@@ -180,7 +194,6 @@ app.get('/upf', (req, res)=>{
 })
 //post functions
 app.post('/user', (req, res)=>{
-    req.session.loggedin = false;
     var email = req.body.email;
     console.log(email)
     
@@ -188,33 +201,35 @@ app.post('/user', (req, res)=>{
     console.log(password)
 
     if (email && password) {
-        db.query(`SELECT * FROM user WHERE mail = '${email}' `, function(error, results) {
+        var msg = `<p>Sir/Madam,<br>You successfully <b color="red">unsubscribed</b> from TCE NAVIGATOR. You will no longer receive emails.<br><br>Thank you.<br><br>Regards,<br>TCE NAVIGATOR ADMIN.`
+        db.query(`DELETE FROM user WHERE mail = '${email}'`, function(error, results) {
             if(error) throw error;
-            if (results.length > 0) {
-                var hash = results[0].password;
-
-                const passwordHash = bcrypt.hashSync(password, 10);
-                console.log(passwordHash)
-                const verified = bcrypt.compareSync(password, hash);
-
-                if (verified) {
-                    req.session.loggedin = true;
-                    req.session.email = email;
-                    req.session.name = results[0].name;
-                    res.redirect('/userpage');
-                } else {
-                    res.write(`<script>window.alert('Enter the correct password!!!!!');window.location.href = '/userLogin';</script>`);
+            let transporter = nodemailer.createTransport({
+                host: "smtp.gmail.com",
+                port: 465,
+                secure: true,
+                auth:{
+                    user: "apiprojectportal@gmail.com",
+                    pass: "tceit123"
+                },
+                tls:{
+                    rejectUnauthorized: false
                 }
-
-            } else {
-
-                res.write(`<script>window.alert('Enter the correct email!!!!!');window.location.href = '/userLogin';</script>`)
+            });
+            let mailoptions = {
+                from: '"ADMIN" <apiprojectportal@gmail.com>',
+                to: `${email}`,
+                subject: "TCE NAVIGATOR - SUBSCRIPTION",
+                html: msg,
             }
-            res.end();
+            transporter.sendMail(mailoptions, (err, info)=>{
+                if(err)
+                    throw err;
+                console.log("Message sent");
+                res.write(`<script>window.alert('UNSUBSCRIBED SUCCESSFULLY!!!!');window.location.href = '/';</script>`)
+            })
         });
-    } else {
-        res.write(`<script>window.alert('Enter  password and email!!!!!!');window.location.href = '/userLogin';</script>`)
-    }
+    } 
 })
 
 app.post('/register', (req, res)=>{
@@ -222,10 +237,6 @@ app.post('/register', (req, res)=>{
     var email = req.body.email;
     var password = req.body.password;
     var password1 = req.body.password1;
-    console.log(name)
-    console.log(email)
-    console.log(password)
-    console.log(password1)
 
     q = `SELECT mail FROM user WHERE mail='${email}'`
     db.query(q, (error, result)=>
@@ -235,12 +246,35 @@ app.post('/register', (req, res)=>{
         {
             if(password == password1)
             {
-                console.log("if entered")
                 const passwordHash = bcrypt.hashSync(password, 10);
+                var msg = `<p>Sir/Madam,<br>This is the notification about the <b>successful subscription</b> on TCE NAVIGATOR. <br><br>Thank you.<br><br>Regards,<br>TCE NAVIGATOR ADMIN.`
                 let qr = `INSERT INTO user(name, mail, password) VALUES('${name}', '${email}', '${passwordHash}')`
                 db.query(qr, (error, result)=>{
                     if(error) throw error;
-                    res.write(`<script>window.alert('Registration successful');window.location.href = '/userLogin';</script>`)
+                    let transporter = nodemailer.createTransport({
+                        host: "smtp.gmail.com",
+                        port: 465,
+                        secure: true,
+                        auth:{
+                            user: "apiprojectportal@gmail.com",
+                            pass: "tceit123"
+                        },
+                        tls:{
+                            rejectUnauthorized: false
+                        }
+                    });
+                    let mailoptions = {
+                        from: '"ADMIN" <apiprojectportal@gmail.com>',
+                        to: `${email}`,
+                        subject: "TCE NAVIGATOR - SUBSCRIPTION",
+                        html: msg,
+                    }
+                    transporter.sendMail(mailoptions, (err, info)=>{
+                        if(err)
+                            throw err;
+                        console.log("Message sent");
+                        res.write(`<script>window.alert('Subcription successful');window.location.href = '/';</script>`)
+                    })
                 })
             }
             else
@@ -250,7 +284,7 @@ app.post('/register', (req, res)=>{
         }
         else
         {
-            res.write(`<script>window.alert('User already exist!'); window.location.href = '/userLogin';</script>`)
+            res.write(`<script>window.alert('User already exist!'); window.location.href = '/';</script>`)
         }
     });
 })
@@ -305,7 +339,37 @@ app.post('/eventform', function(req, res) {
         if(err) throw err;
         req.session.eventid = result['insertId'];
         console.log(req.session.eventid)
-        res.redirect('/uploadfile');
+        let qr = `SELECT mail from user`
+        var msg = `<p>Sir/Madam,<br>This is the notification about the event. <br>EVENT NAME: ${event_name}<br>EVENT DATE: ${event_date}<br>EVENT VENUE: ${event_venue}<br>REGISTRATION VENUE: ${registration_venue}<br>EVENT DESCRIPTION: ${event_desc}<BR><br>Thank you<br><br>Regards,<br>TCE NAVIGATOR ADMIN`
+        db.query(qr, (error, result)=>{
+            for(var i=0; i<result.length; i++)
+            {
+                let transporter = nodemailer.createTransport({
+                    host: "smtp.gmail.com",
+                    port: 465,
+                    secure: true,
+                    auth:{
+                        user: "apiprojectportal@gmail.com",
+                        pass: "tceit123"
+                    },
+                    tls:{
+                        rejectUnauthorized: false
+                    }
+                });
+                let mailoptions = {
+                    from: '"ADMIN" <apiprojectportal@gmail.com>',
+                    to: `${result[i]['mail']}`,
+                    subject: "TCE NAVIGATOR - SUBSCRIPTION",
+                    html: msg,
+                }
+                transporter.sendMail(mailoptions, (err, info)=>{
+                    if(err)
+                        throw err;
+                    console.log("Message sent");
+                    res.redirect('/uploadfile');
+                })
+            }
+        })
     })
 });
 const storage = multer.diskStorage({

@@ -6,6 +6,9 @@ app.controller('dashcon', function($scope, $http)
     $scope.file = data.data;
   });
 
+  $http.get('/dashboard').then(function(data){
+    $scope.dash = data.data;
+  })
   $http.get('/dashboardtotal').then(function(data){
     $scope.counttotal = data.data;
   })
