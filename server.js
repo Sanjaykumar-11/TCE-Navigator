@@ -17,7 +17,7 @@ app.use(express.static('images'));
 app.use(express.static('scripts'));
 app.use(express.static('styles'));
 app.use(express.static('upload'));
-
+app.use(express.static('imgg'));
 
 app.use(session({
     secret: 'secret',
@@ -54,10 +54,13 @@ app.get('/unsubscribe', (req, res)=>{
     res.sendFile(`${__dirname}/login.html`);
 })
 
+app.get('/gallery', (req, res)=>{
+    res.sendFile(`${__dirname}/gallery.html`);
+})
+
 app.get('/adminLogin', (req, res)=>{
     res.sendFile(`${__dirname}/adminlogin.html`)
 })
-
 
 app.get('/dashboardtotal', (req, res)=>{
     let q = `SELECT COUNT(id) FROM event`

@@ -26,7 +26,7 @@
                   </li></ul>
                   
                       <ul class="navbar-nav ms-auto mb-2 mb-lg-0"><br>
-                          <li class="nav-item"> <h5><a class="nav-link" id='x' href="/logout" style="font-family:lobster; color:whitesmoke; text-decoration: none; padding-right: 30px; font-size: 20;">GALLERY</a></h5></li><br>
+                          <li class="nav-item"> <h5><a class="nav-link" id='x' href="/gallery" style="font-family:lobster; color:whitesmoke; text-decoration: none; padding-right: 30px; font-size: 20;">GALLERY</a></h5></li><br>
                           <li class="nav-item"> <h5><a class="nav-link" id='x' href="/subscribe" style="font-family:lobster; color:whitesmoke; text-decoration: none; padding-right: 30px; font-size: 20;">SUBSCRIBE</a></h5></li><br>
                       </ul>
                       
@@ -44,7 +44,7 @@
         
         <div ng-repeat="x in dash">
         <div class="col-sm-4">
-          <div class="card" style="box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); padding: 50px 50px">
+          <div class="card" style="box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); padding: 20px 20px">
             <div class="card-body">
               <center><h4 style="color:#003380" class="card-title">{{x.event_name | uppercase}}</h4></center><br>
               <img src={{x.event_img}} class="card-img-top"/><br><br>
@@ -52,7 +52,7 @@
               <ul class="list-group list-group-flush">
                 <li class="list-group-item"><B>VENUE: </B>   {{x.event_venue}}</li>
                 <li class="list-group-item"><B>REGISTRATION:</B>  {{x.registration_venue}}</li>
-                <li class="list-group-item"><B>DATE:</B>  {{x.date}}</li>
+                <li class="list-group-item"><B>DATE:</B>  {{x.date.slice(0,10)}}</li>
                 <center><a href="/fullscreenmap" class="btn btn-primary">NAVIGATE</a></center>
               </ul>
             </div>

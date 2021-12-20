@@ -23,7 +23,10 @@
 <!-- Latest compiled JavaScript -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-
+ <!-- Table to Excel -->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <script src="//cdn.rawgit.com/rainabba/jquery-table2excel/1.1.0/dist/jquery.table2excel.min.js"></script>
+	
       <nav class="navbar navbar-expand-sm "style="background-color: #003380; color: whitesmoke" id="dark">
         
         <a class="navbar-brand" href="/" style="font-family:lobster"><img src="tce_logo.png" alt="logo" style="width:78px; height:70px; margin-left: 10px;"> </a>
@@ -48,7 +51,7 @@
   <center><h1 style = color:#003380; font-size>EVENTS</h1></center>
      
   <br/>  
-  <table class="table table-bordered data-table">  
+  <table class="table table-bordered data-table" id='protab'>  
     <tr>
       <th>ID</th>  
       <th>DATE</th>  
@@ -67,7 +70,7 @@
       <td>{{x.registration_venue}}</td>
       <td>{{x.description}}</td>
       <td>{{x.display}}</td>
-    <td><button class="btn btn-primary"><a href="/updateform?id={{x.id}}" style="text-decoration: none; color: whitesmoke">Update</a></button>
+    <td class="noExl"><button class="btn btn-primary"><a href="/updateform?id={{x.id}}" style="text-decoration: none; color: whitesmoke">Update</a></button>
 
    
       <!--close the modal by just clicking outside of the modal-->
@@ -80,11 +83,23 @@
               }
           }
       </script></td>
-  <td><form method="post" action="/delev">
+  <td class="noExl"><form method="post" action="/delev">
     <input type="hidden" name="devent" value='{{x.id}}'>
     <button type="submit" class="btn btn-danger save-btn">Delete</button></form></td></tr>
   </table>  
-     
+      <center><button onclick="exportTo()" class="btn btn-success">Export to Excel</button></center>
+  <script type="text/javascript">
+
+    function exportTo() {
+        var name = 'events';
+    $("#protab").table2excel({
+      exclude:".noExl",
+        filename: name+'.xls'
+    });
+ }
+
+</script>
+  
 </div>  
     
        
