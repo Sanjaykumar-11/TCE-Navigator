@@ -25,26 +25,30 @@ app.use(session({
     secret: 'secret',
     resave: true,
     saveUninitialized: false
-}));``
+}));
 
 //database configuration
 const db = sql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: '',
-    database: 'tce_navigator',
-    port: '3306'
+    connectionLimit: 10,
+    host: process.env.MYSQL_HOST || "localhost",
+    user: process.env.MYSQL_USER || "root",
+    password: process.env.MYSQL_PASSWORD || "password",
+    database: process.env.MYSQL_DATABASE || "test",
 });
+
 
 db.connect((err) => {
     if (err) {
-        console.log('Db connection error', err);
+        throw err;
+    }
+    else{
+        console.log('Db connected');
     }
 });
 
 
 app.listen(3100, () => {
-    console.log("Server listening to port 3100!!!!")
+    console.log("Server listening to port 8005!!!!")
 })
 
 //get funtions
@@ -210,19 +214,16 @@ app.post('/user', (req, res)=>{
         db.query(`DELETE FROM user WHERE mail = '${email}'`, function(error, results) {
             if(error) throw error;
             let transporter = nodemailer.createTransport({
-                host: "smtp.gmail.com",
-                port: 465,
-                secure: true,
-                auth:{
-                    user: "apiprojectportal@gmail.com",
+                host: "smtp-mail.outlook.com", // hostname
+                secureConnection: false, // TLS requires secureConnection to be false
+                port: 587, // port for secure SMTP
+                auth: {
+                    user: "campusnavigators@outlook.com",
                     pass: "tceit123"
                 },
-                tls:{
-                    rejectUnauthorized: false
-                }
             });
             let mailoptions = {
-                from: '"ADMIN" <apiprojectportal@gmail.com>',
+                from: '"ADMIN" <campusnavigators@outlook.com>',
                 to: `${email}`,
                 subject: "TCE NAVIGATOR - SUBSCRIPTION",
                 html: msg,
@@ -257,19 +258,17 @@ app.post('/register', (req, res)=>{
                 db.query(qr, (error, result)=>{
                     if(error) throw error;
                     let transporter = nodemailer.createTransport({
-                        host: "smtp.gmail.com",
-                        port: 465,
-                        secure: true,
-                        auth:{
-                            user: "apiprojectportal@gmail.com",
+                        host: "smtp-mail.outlook.com", // hostname
+                        secureConnection: false, // TLS requires secureConnection to be false
+                        port: 587, // port for secure SMTP
+                        auth: {
+                            user: "campusnavigators@outlook.com",
                             pass: "tceit123"
                         },
-                        tls:{
-                            rejectUnauthorized: false
-                        }
                     });
+
                     let mailoptions = {
-                        from: '"ADMIN" <apiprojectportal@gmail.com>',
+                        from: '"ADMIN" <campusnavigators@outlook.com>',
                         to: `${email}`,
                         subject: "TCE NAVIGATOR - SUBSCRIPTION",
                         html: msg,
@@ -293,6 +292,7 @@ app.post('/register', (req, res)=>{
         }
     });
 })
+
 
 app.post('/admin', (req, res)=>{
     req.session.loggedin = false;
@@ -350,19 +350,17 @@ app.post('/eventform', function(req, res) {
             for(var i=0; i<result.length; i++)
             {
                 let transporter = nodemailer.createTransport({
-                    host: "smtp.gmail.com",
-                    port: 465,
-                    secure: true,
-                    auth:{
-                        user: "apiprojectportal@gmail.com",
+                    host: "smtp-mail.outlook.com", // hostname
+                    secureConnection: false, // TLS requires secureConnection to be false
+                    port: 587, // port for secure SMTP
+                    auth: {
+                        user: "campusnavigators@outlook.com",
                         pass: "tceit123"
                     },
-                    tls:{
-                        rejectUnauthorized: false
-                    }
                 });
+                
                 let mailoptions = {
-                    from: '"ADMIN" <apiprojectportal@gmail.com>',
+                    from: '"ADMIN" <campusnavigators@outlook.com>',
                     to: `${result[i]['mail']}`,
                     subject: "TCE NAVIGATOR - SUBSCRIPTION",
                     html: msg,
@@ -397,6 +395,7 @@ app.post('/upl', upload.single('filer'), function(req, res) {
     if (!file) {
         res.write(`<script>window.alert('Upload file');window.location.href = '/uploadfile';</script>`);
     }
+
     let q = `UPDATE event SET event_img = '${file.filename}' WHERE id=${req.session.eventid};`
     db.query(q, (err, result) => {
         if (err)
@@ -420,6 +419,7 @@ app.post('/upevent',(req, res)=>{
         res.write(`<script>window.alert('Updated!'); window.location.href = 'editevents';</script>`);
     })
 })
+
 
 app.post('/delev',(req,res)=>{
     var id=req.body.devent;
