@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 18, 2021 at 11:12 AM
+-- Generation Time: Dec 23, 2021 at 09:24 AM
 -- Server version: 10.4.19-MariaDB
 -- PHP Version: 8.0.7
 
@@ -34,6 +34,13 @@ CREATE TABLE `admin` (
   `password` varchar(500) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Dumping data for table `admin`
+--
+
+INSERT INTO `admin` (`id`, `name`, `email`, `password`) VALUES
+(1, 'admin', 'admin@gmail.com', '$2b$10$oUufGrLoTfUr8nFje3K3WODSXaTTA1XXAX8mXOqvXx6kDkrzYSjte');
+
 -- --------------------------------------------------------
 
 --
@@ -42,14 +49,23 @@ CREATE TABLE `admin` (
 
 CREATE TABLE `event` (
   `id` int(100) NOT NULL,
+  `date` date NOT NULL,
   `event_name` varchar(300) NOT NULL,
   `event_venue` varchar(100) NOT NULL,
   `registration_venue` varchar(100) NOT NULL,
-  `location_link` varchar(500) NOT NULL,
   `event_img` varchar(500) NOT NULL,
-  `venue_img` varchar(500) NOT NULL,
-  `note` varchar(1000) NOT NULL
+  `description` varchar(1000) NOT NULL,
+  `display` varchar(30) NOT NULL DEFAULT 'yes'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `event`
+--
+
+INSERT INTO `event` (`id`, `date`, `event_name`, `event_venue`, `registration_venue`, `event_img`, `description`, `display`) VALUES
+(16, '2021-12-29', 'First Year Admission', 'KS Auditorium', 'Open Auditorium', '1639921029366.png', 'desc', 'yes'),
+(28, '2021-12-09', 'IT Workshop', 'IT Seminar hall', 'Online', '1639973372488.png', 'Cyber Security ', 'yes'),
+(32, '2021-12-24', 'Vaccination camp', 'Open Auditorium', 'Library', '1640233034029.png', 'Vaccines against COVID-19', 'yes');
 
 -- --------------------------------------------------------
 
@@ -61,7 +77,7 @@ CREATE TABLE `user` (
   `userid` int(200) NOT NULL,
   `name` varchar(50) NOT NULL,
   `mail` varchar(50) NOT NULL,
-  `password` varchar(400) NOT NULL
+  `password` varchar(600) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
@@ -69,8 +85,8 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`userid`, `name`, `mail`, `password`) VALUES
-(1, 'Sanjaykumar S', 'sanjay484641@gmail.com', '$2b$10$oUufGrLoTfUr8nFje3K3WODSXaTTA1XXAX8mXOqvXx6kDkrzYSjte'),
-(2, 'Jeya Ganesh A V', 'jeyaganesh@gmail.com', '$2b$10$0fAULVctkvLfjCaRCER0x.9lhO4QcLUTFK5NsmkuG6XAEzMvXeMDO');
+(12, 'Sanjaykumar S', 'sanjay484641@gmail.com', '$2b$10$Gg88YLH3amoFuFa7OsdRPu7EzwDUUeIvUoZkvWE3RsaEIb2gl6/Dm'),
+(16, 'Sanjay', 'yasotha775@gmail.com', '$2b$10$b4nPuiI2sJmtV5jai.u3tOz9Teh2tLSmxwh0OD09Hj23XALhtEhHu');
 
 --
 -- Indexes for dumped tables
@@ -104,19 +120,19 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT for table `admin`
 --
 ALTER TABLE `admin`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `event`
 --
 ALTER TABLE `event`
-  MODIFY `id` int(100) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(100) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
 
 --
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `userid` int(200) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `userid` int(200) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

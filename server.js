@@ -1,9 +1,11 @@
 //Initialization
 const express = require('express');
-const sql = require('mysql2');
+const sql = require('mysql');
 const bp = require('body-parser');
 var session = require('express-session');
 const bcrypt = require('bcrypt');
+const { body, validationResult } = require('express-validator');
+require('dotenv').config();
 const multer = require('multer');
 const app = express();
 const path = require('path');
@@ -23,7 +25,7 @@ app.use(session({
     secret: 'secret',
     resave: true,
     saveUninitialized: false
-}));
+}));``
 
 //database configuration
 const db = sql.createConnection({
@@ -343,7 +345,7 @@ app.post('/eventform', function(req, res) {
         req.session.eventid = result['insertId'];
         console.log(req.session.eventid)
         let qr = `SELECT mail from user`
-        var msg = `<p>Sir/Madam,<br>This is the notification about the event. <br>EVENT NAME: ${event_name}<br>EVENT DATE: ${event_date}<br>EVENT VENUE: ${event_venue}<br>REGISTRATION VENUE: ${registration_venue}<br>EVENT DESCRIPTION: ${event_desc}<BR><br>Thank you<br><br>Regards,<br>TCE NAVIGATOR ADMIN`
+        var msg = `<p>Sir/Madam,<br>This is the notification about the event. <br><br>EVENT NAME: ${event_name}<br>EVENT DATE: ${event_date}<br>EVENT VENUE: ${event_venue}<br>REGISTRATION VENUE: ${registration_venue}<br>EVENT DESCRIPTION: ${event_desc}<BR><br><a href="http://localhost:3100/fullscreenmap">Click here </a> to see details.<br>Thank you<br><br>Regards,<br>TCE NAVIGATOR ADMIN`
         db.query(qr, (error, result)=>{
             for(var i=0; i<result.length; i++)
             {
